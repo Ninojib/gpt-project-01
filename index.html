@@ -14,8 +14,6 @@
     <br><br>
     <label for="userMessageInput">User Message:</label>
     <input type="text" id="userMessageInput" placeholder="Enter a user message">
-    
-  
     <button id="requestButton">Request to OpenAI API</button>
     <pre id="responseOutput"></pre>
   
@@ -26,14 +24,33 @@
       const apiKeyInput = document.getElementById('apiKeyInput');
       const systemMessageInput = document.getElementById('systemMessageInput');
       const userMessageInput = document.getElementById('userMessageInput');
-  
+
       const requestButton = document.getElementById('requestButton');
       const responseOutput = document.getElementById('responseOutput');
-  
+
+      // Check if API key is stored in localStorage
+      const storedApiKey = localStorage.getItem('apiKey');      
+
+      // add event listener to update localStorage on change
+      apiKeyInput.addEventListener('change', (event) => {
+        const newApiKey = event.target.value;
+        if (newApiKey) {
+          localStorage.setItem('apiKey', newApiKey);
+        } else {
+          localStorage.removeItem('apiKey');
+        }
+      });
+
+      if (storedApiKey) {
+        // apiKeyInput.value = storedApiKey;
+      }else{
+        console.log('API Key is missing')
+      }
+
       requestButton.addEventListener('click', async () => {
-        const apiKey = apiKeyInput.value;
+        let apiKey = localStorage.getItem('apiKey');
         const messages = [
-              {role: "system", content: systemMessageInput.value},
+              {role: "system", content: `${systemMessageInput.value}. Here is the list of chapters to choose from:${JSON.stringify(chapters)}`},
               {role: "user", content: userMessageInput.value}
           ];
           console.log(messages, apiKey);
@@ -50,16 +67,26 @@
             temperature: 1,
           })
         };
-  
+
         try {
           const response = await fetch('https://api.openai.com/v1/chat/completions', requestOptions);
           const jsonResponse = await response.json();
           responseOutput.textContent = JSON.stringify(jsonResponse, null, 2);
           console.log(jsonResponse.choices[0].message.content);
+
+          // Save API key to localStorage
+          // localStorage.setItem('apiKey', apiKey);
         } catch (error) {
           console.error('Error:', error);
+
+          // Handle invalid API key
+          if (error.message === 'Unauthorized') {
+            alert('Invalid API Key');
+            localStorage.removeItem('apiKey');
+          }
         }
       });
+
     </script>
   
   
