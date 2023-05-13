@@ -10,7 +10,7 @@
     <input type="password" id="apiKeyInput" placeholder="Enter your API key">
       <br><br>
     <label for="systemMessageInput">System Message:</label>
-    <input type="text" id="systemMessageInput" placeholder="Enter a system message">
+    <input type="text" id="systemMessageInput" placeholder="Enter a system message" value="You are NACE-GPT, you help find the NACE CODE for any product. Give me the chapter my product corresponds to and all possible sub-chapters. Give me all relevant information and fun facts. Please reference to the following list. For example: C- Manufacturing > C.26 Manufacture of computer, electronic, and optical products. > C.26.1 Manufacture of electronic components and boards > C.26.11 Manufacture of electronic components. Also include all possibilities regarding the product and industry.">
     <br><br>
     <label for="userMessageInput">User Message:</label>
     <input type="text" id="userMessageInput" placeholder="Enter a user message">
@@ -63,7 +63,7 @@
           body: JSON.stringify({
             model: 'gpt-3.5-turbo',
             messages: messages,
-            max_tokens: 50,
+            max_tokens: 500,
             temperature: 1,
           })
         };
